@@ -26,8 +26,6 @@ th{background:#f5f5f3;border:1px solid #e0e0e0;padding:7px 12px;font-weight:600;
 td{border:1px solid #ebebeb;padding:7px 12px;}
 tr.tot td{font-weight:700;background:#f0f6fd;}
 .num{text-align:right;font-variant-numeric:tabular-nums;}
-.btn{background:#185FA5;color:#fff;border:none;border-radius:6px;padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;}
-.btn:hover{background:#0C447C;}
 .footer{font-size:11px;color:#999;border-top:1px solid #e0e0e0;padding-top:12px;margin-top:4px;line-height:1.6;}
 </style>
 </head>
@@ -35,139 +33,144 @@ tr.tot td{font-weight:700;background:#f0f6fd;}
 
 <div class="hdr">
   <h1>Tipo de Cambio Oficial BCV &mdash; USD/VES</h1>
-  <div class="sub" id="hdr-sub">Banco Central de Venezuela &bull; Última actualización: 16 de junio de 2026 &bull; Modelo EMPA con &lambda;=0,94 &bull; Calibración: 16 mar &ndash; 16 jun 2026 (60 sesiones)</div>
+  <div class="sub">Banco Central de Venezuela &bull; Ultima actualizacion: 16 de junio de 2026 &bull; Modelo EMPA, calibracion 16 mar - 16 jun 2026 (60 sesiones)</div>
 </div>
 
 <div class="nota">
-  <strong>Uso contable.</strong> Muestra el tipo de cambio oficial BCV y proyecciones estadísticas para los próximos 10 días hábiles. Para conversión de estados financieros según NIC 21 / ASC 830, use los promedios de la tabla inferior.
+  <strong>Uso contable.</strong> Muestra el tipo de cambio oficial BCV y proyecciones para los proximos 10 dias habiles. Para conversion segun NIC 21 / ASC 830, use los promedios de la tabla inferior.
 </div>
 
 <div class="cards">
   <div class="card">
     <div class="cl">Tasa BCV oficial</div>
     <div class="cv" id="bv">Bs.S 592,52</div>
-    <div class="cs">USD/VES &bull; <span id="bd">16 jun 2026</span></div>
+    <div class="cs">USD/VES - 16 jun 2026</div>
   </div>
   <div class="card hi">
-    <div class="cl">Proyección — 1 semana</div>
-    <div class="cv" id="f1v">&mdash;</div>
-    <div class="cs" id="f1d">23 jun 2026</div>
-    <div class="cr" id="f1r">&mdash;</div>
+    <div class="cl">Proyeccion - 1 semana</div>
+    <div class="cv" id="f1v">calculando...</div>
+    <div class="cs">23 jun 2026</div>
+    <div class="cr" id="f1r">-</div>
   </div>
   <div class="card hi">
-    <div class="cl">Proyección — 2 semanas</div>
-    <div class="cv" id="f2v">&mdash;</div>
-    <div class="cs" id="f2d">30 jun 2026</div>
-    <div class="cr" id="f2r">&mdash;</div>
+    <div class="cl">Proyeccion - 2 semanas</div>
+    <div class="cv" id="f2v">calculando...</div>
+    <div class="cs">30 jun 2026</div>
+    <div class="cr" id="f2r">-</div>
   </div>
 </div>
 
 <div class="sec">
-  <h2>Historial y proyección (Bs.S por USD)</h2>
+  <h2>Historial y proyeccion (Bs.S por USD)</h2>
   <div style="position:relative;height:255px"><canvas id="chart"></canvas></div>
 </div>
 
 <div class="sec">
-  <h2>Promedios del período para conversión contable (NIC 21 / ASC 830)</h2>
+  <h2>Promedios del periodo para conversion contable (NIC 21 / ASC 830)</h2>
   <table>
     <thead>
-      <tr><th>Período</th><th class="num">Sesiones</th><th class="num">Apertura</th><th class="num">Cierre</th><th class="num">Tasa promedio</th><th class="num">Variación</th></tr>
+      <tr><th>Periodo</th><th class="num">Sesiones</th><th class="num">Apertura</th><th class="num">Cierre</th><th class="num">Tasa promedio</th><th class="num">Variacion</th></tr>
     </thead>
-    <tbody id="avg-tb"></tbody>
+    <tbody id="avg-tb"><tr><td colspan="6">Cargando...</td></tr></tbody>
   </table>
-</div>
 </div>
 
 <div class="footer">
-  Metodología: Media Móvil Exponencialmente Ponderada (EMPA/EWMA), &lambda;=0,94. Vida media ≈11 días hábiles. Bandas de confianza: ±z·&sigma;·&radic;t (modelo gaussiano). Fuente: TCambio.app / BCV (bcv.org.ve). Solo tasas oficiales; no refleja mercados alternativos.
+  Metodologia: EMPA/EWMA, lambda=0.94. Vida media ~11 dias habiles. Bandas de confianza: +/-2*sigma*sqrt(t). Fuente: TCambio.app / BCV (bcv.org.ve). Solo tasas oficiales.
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
 <script>
-// ── DATOS HISTÓRICOS (16 mar – 16 jun 2026) ──────────────────────────────────
-// allDates: etiquetas de sesión (61 puntos), TASAS: niveles Bs.S (61), CAMBIOS: variación diaria decimal (60)
-const allDates=['16 mar','17 mar','18 mar','20 mar','23 mar','24 mar','25 mar','26 mar','27 mar','30 mar','31 mar','1 abr','6 abr','7 abr','8 abr','9 abr','10 abr','13 abr','14 abr','15 abr','16 abr','17 abr','20 abr','21 abr','22 abr','23 abr','24 abr','27 abr','28 abr','29 abr','30 abr','4 may','5 may','6 may','7 may','8 may','11 may','12 may','13 may','14 may','15 may','19 may','20 may','21 may','22 may','25 may','26 may','27 may','28 may','29 may','1 jun','2 jun','3 jun','4 jun','5 jun','9 jun','10 jun','11 jun','12 jun','15 jun','16 jun'];
-const TASAS=[446.80,448.36,451.50,455.25,457.07,459.45,462.66,466.60,468.51,471.70,473.87,473.91,474.05,474.53,475.00,475.95,476.43,477.14,477.62,478.58,479.77,480.25,481.21,481.69,482.75,483.33,483.86,484.74,485.22,486.19,487.11,489.55,490.04,494.11,496.83,499.86,500.46,504.91,508.60,510.78,515.17,517.96,520.91,523.67,526.86,530.50,535.38,540.04,544.57,549.37,554.42,557.97,558.64,560.37,563.28,567.68,572.67,577.54,582.68,587.40,592.52];
-const CAMBIOS=[0.0035,0.0070,0.0083,0.0040,0.0052,0.0070,0.0085,0.0041,0.0068,0.0046,0.0001,0.0003,0.0010,0.0010,0.0020,0.0010,0.0015,0.0010,0.0020,0.0025,0.0010,0.0020,0.0010,0.0022,0.0012,0.0011,0.0018,0.0010,0.0020,0.0019,0.0050,0.0010,0.0083,0.0055,0.0061,0.0012,0.0089,0.0073,0.0043,0.0086,0.0054,0.0057,0.0053,0.0061,0.0069,0.0092,0.0087,0.0084,0.0088,0.0092,0.0064,0.0012,0.0031,0.0052,0.0078,0.0088,0.0085,0.0089,0.0081,0.0086];
+window.addEventListener('load', function() {
 
-// Días hábiles para el pronóstico (10 sesiones)
-const DIAS_FC=['17 jun','18 jun','19 jun','20 jun','23 jun','24 jun','25 jun','26 jun','27 jun','30 jun'];
-const LAM=0.94;
+var allDates=['16 mar','17 mar','18 mar','20 mar','23 mar','24 mar','25 mar','26 mar','27 mar','30 mar','31 mar','1 abr','6 abr','7 abr','8 abr','9 abr','10 abr','13 abr','14 abr','15 abr','16 abr','17 abr','20 abr','21 abr','22 abr','23 abr','24 abr','27 abr','28 abr','29 abr','30 abr','4 may','5 may','6 may','7 may','8 may','11 may','12 may','13 may','14 may','15 may','19 may','20 may','21 may','22 may','25 may','26 may','27 may','28 may','29 may','1 jun','2 jun','3 jun','4 jun','5 jun','9 jun','10 jun','11 jun','12 jun','15 jun','16 jun'];
+var TASAS=[446.80,448.36,451.50,455.25,457.07,459.45,462.66,466.60,468.51,471.70,473.87,473.91,474.05,474.53,475.00,475.95,476.43,477.14,477.62,478.58,479.77,480.25,481.21,481.69,482.75,483.33,483.86,484.74,485.22,486.19,487.11,489.55,490.04,494.11,496.83,499.86,500.46,504.91,508.60,510.78,515.17,517.96,520.91,523.67,526.86,530.50,535.38,540.04,544.57,549.37,554.42,557.97,558.64,560.37,563.28,567.68,572.67,577.54,582.68,587.40,592.52];
+var CAMBIOS=[0.0035,0.0070,0.0083,0.0040,0.0052,0.0070,0.0085,0.0041,0.0068,0.0046,0.0001,0.0003,0.0010,0.0010,0.0020,0.0010,0.0015,0.0010,0.0020,0.0025,0.0010,0.0020,0.0010,0.0022,0.0012,0.0011,0.0018,0.0010,0.0020,0.0019,0.0050,0.0010,0.0083,0.0055,0.0061,0.0012,0.0089,0.0073,0.0043,0.0086,0.0054,0.0057,0.0053,0.0061,0.0069,0.0092,0.0087,0.0084,0.0088,0.0092,0.0064,0.0012,0.0031,0.0052,0.0078,0.0088,0.0085,0.0089,0.0081,0.0086];
+var DIAS_FC=['17 jun','18 jun','19 jun','20 jun','23 jun','24 jun','25 jun','26 jun','27 jun','30 jun'];
+var LAM=0.94;
 
-// ── EMPA ──────────────────────────────────────────────────────────────────────
-const N=CAMBIOS.length;
-const W=CAMBIOS.map((_,i)=>Math.pow(LAM,N-1-i));
-const TW=W.reduce((s,w)=>s+w,0);
-const MU=W.reduce((s,w,i)=>s+w*CAMBIOS[i],0)/TW;
-const SIG=Math.sqrt(W.reduce((s,w,i)=>s+w*(CAMBIOS[i]-MU)**2,0)/TW);
+var N=CAMBIOS.length;
+var W=CAMBIOS.map(function(_,i){return Math.pow(LAM,N-1-i);});
+var TW=W.reduce(function(s,w){return s+w;},0);
+var MU=W.reduce(function(s,w,i){return s+w*CAMBIOS[i];},0)/TW;
+var SIG=Math.sqrt(W.reduce(function(s,w,i){return s+w*Math.pow(CAMBIOS[i]-MU,2);},0)/TW);
 
-function proyectar(){
-  const base=TASAS[TASAS.length-1],lm=Math.log(1+MU);
-  return Array.from({length:11},(_,t)=>({
-    c:+(base*Math.pow(1+MU,t)).toFixed(2),
-    u2:+(base*Math.exp(t*lm+2*SIG*Math.sqrt(t))).toFixed(2),
-    l2:+(base*Math.exp(t*lm-2*SIG*Math.sqrt(t))).toFixed(2)
-  }));
+var F=[];
+var base=TASAS[TASAS.length-1];
+var lm=Math.log(1+MU);
+for(var t=0;t<=10;t++){
+  F.push({
+    c:parseFloat((base*Math.pow(1+MU,t)).toFixed(2)),
+    u2:parseFloat((base*Math.exp(t*lm+2*SIG*Math.sqrt(t))).toFixed(2)),
+    l2:parseFloat((base*Math.exp(t*lm-2*SIG*Math.sqrt(t))).toFixed(2))
+  });
 }
-const F=proyectar();
 
-// ── FORMATO ───────────────────────────────────────────────────────────────────
-const fmt=v=>v.toLocaleString('es-VE',{minimumFractionDigits:2,maximumFractionDigits:2});
-const avg=a=>a.reduce((s,v)=>s+v,0)/a.length;
+function fmt(v){return v.toLocaleString('es-VE',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function avg(a){return a.reduce(function(s,v){return s+v;},0)/a.length;}
 
-// ── TARJETAS ──────────────────────────────────────────────────────────────────
 document.getElementById('bv').textContent='Bs.S '+fmt(TASAS[TASAS.length-1]);
 document.getElementById('f1v').textContent='Bs.S '+fmt(F[5].c);
-document.getElementById('f1r').textContent='Rango 95 %: Bs.S '+fmt(F[5].l2)+' – '+fmt(F[5].u2);
+document.getElementById('f1r').textContent='Rango 95%: Bs.S '+fmt(F[5].l2)+' - '+fmt(F[5].u2);
 document.getElementById('f2v').textContent='Bs.S '+fmt(F[10].c);
-document.getElementById('f2r').textContent='Rango 95 %: Bs.S '+fmt(F[10].l2)+' – '+fmt(F[10].u2);
+document.getElementById('f2r').textContent='Rango 95%: Bs.S '+fmt(F[10].l2)+' - '+fmt(F[10].u2);
 
-// ── TABLA PROMEDIOS ───────────────────────────────────────────────────────────
-const periodos=[
+var periodos=[
   {nombre:'Marzo 2026',datos:TASAS.slice(0,11)},
   {nombre:'Abril 2026',datos:TASAS.slice(11,31)},
   {nombre:'Mayo 2026',datos:TASAS.slice(31,50)},
-  {nombre:'Junio 2026 (al '+allDates[allDates.length-1]+')',datos:TASAS.slice(50)}
+  {nombre:'Junio 2026 (al 16 jun)',datos:TASAS.slice(50)}
 ];
-let html='';
-periodos.forEach(p=>{
-  const a=avg(p.datos),op=p.datos[0],cl=p.datos[p.datos.length-1];
-  html+=`<tr><td>${p.nombre}</td><td class="num">${p.datos.length}</td><td class="num">${fmt(op)}</td><td class="num">${fmt(cl)}</td><td class="num"><strong>${fmt(a)}</strong></td><td class="num">+${(((cl-op)/op)*100).toFixed(2)} %</td></tr>`;
+var rows='';
+periodos.forEach(function(p){
+  var a=avg(p.datos),op=p.datos[0],cl=p.datos[p.datos.length-1];
+  rows+='<tr><td>'+p.nombre+'</td><td class="num">'+p.datos.length+'</td><td class="num">'+fmt(op)+'</td><td class="num">'+fmt(cl)+'</td><td class="num"><strong>'+fmt(a)+'</strong></td><td class="num">+'+((cl-op)/op*100).toFixed(2)+' %</td></tr>';
 });
-const q2=TASAS.slice(11),q2a=avg(q2);
-html+=`<tr class="tot"><td><strong>Trim. II 2026 (abr – ${allDates[allDates.length-1]})</strong></td><td class="num">${q2.length}</td><td class="num">${fmt(TASAS[11])}</td><td class="num">${fmt(TASAS[TASAS.length-1])}</td><td class="num"><strong>${fmt(q2a)}</strong></td><td class="num">+${(((TASAS[TASAS.length-1]-TASAS[11])/TASAS[11])*100).toFixed(2)} %</td></tr>`;
-document.getElementById('avg-tb').innerHTML=html;
+var q2=TASAS.slice(11),q2a=avg(q2);
+rows+='<tr class="tot"><td><strong>Trim. II 2026 (abr-16 jun)</strong></td><td class="num">'+q2.length+'</td><td class="num">'+fmt(TASAS[11])+'</td><td class="num">'+fmt(TASAS[TASAS.length-1])+'</td><td class="num"><strong>'+fmt(q2a)+'</strong></td><td class="num">+'+((TASAS[TASAS.length-1]-TASAS[11])/TASAS[11]*100).toFixed(2)+' %</td></tr>';
+document.getElementById('avg-tb').innerHTML=rows;
 
-// ── GRÁFICO ───────────────────────────────────────────────────────────────────
-const etiquetas=[...allDates,...DIAS_FC];
-const nH=allDates.length; // 61
-function padH(a){return[...a,...Array(DIAS_FC.length).fill(null)];}
-function padF(a){return[...Array(nH-1).fill(null),...a];}
+var etiquetas=allDates.concat(DIAS_FC);
+var nH=allDates.length;
+function padH(a){return a.concat(new Array(DIAS_FC.length).fill(null));}
+function padF(a){return new Array(nH-1).fill(null).concat(a);}
 
-const sepP={id:'sep',afterDraw:c=>{
-  const{ctx,scales:{x,y}}=c;
-  const px=x.getPixelForValue(nH-1);
+var sepPlugin={id:'sep',afterDraw:function(ch){
+  var ctx=ch.ctx,xsc=ch.scales.x,ysc=ch.scales.y;
+  var px=xsc.getPixelForValue(nH-1);
   ctx.save();ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(0,0,0,.12)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(px,y.top);ctx.lineTo(px,y.bottom);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(px,ysc.top);ctx.lineTo(px,ysc.bottom);ctx.stroke();
   ctx.setLineDash([]);ctx.font='10px sans-serif';ctx.fillStyle='rgba(0,0,0,.35)';
-  ctx.textAlign='center';ctx.fillText('Hoy',px,y.top-4);ctx.restore();
+  ctx.textAlign='center';ctx.fillText('Hoy',px,ysc.top-4);ctx.restore();
 }};
 
 new Chart(document.getElementById('chart'),{
-  type:'line',plugins:[sepP],
-  data:{labels:etiquetas,datasets:[
-    {data:padF(F.map(p=>p.u2)),borderColor:'rgba(24,95,165,.15)',borderWidth:.5,borderDash:[2,4],fill:'+1',backgroundColor:'rgba(24,95,165,.10)',pointRadius:0,tension:.3},
-    {data:padF(F.map(p=>p.l2)),borderColor:'rgba(24,95,165,.15)',borderWidth:.5,borderDash:[2,4],fill:false,pointRadius:0,tension:.3},
-    {data:padH(TASAS),borderColor:'#185FA5',borderWidth:2.5,pointRadius:0,tension:.2,fill:false},
-    {data:padF(F.map(p=>p.c)),borderColor:'#0C447C',borderWidth:2,borderDash:[5,4],
-     pointRadius:[...Array(nH+DIAS_FC.length-1).fill(0),5],pointBackgroundColor:'#0C447C',tension:.3,fill:false}
-  ]},
+  type:'line',
+  plugins:[sepPlugin],
+  data:{
+    labels:etiquetas,
+    datasets:[
+      {data:padF(F.map(function(p){return p.u2;})),borderColor:'rgba(24,95,165,.15)',borderWidth:.5,fill:'+1',backgroundColor:'rgba(24,95,165,.10)',pointRadius:0,tension:.3},
+      {data:padF(F.map(function(p){return p.l2;})),borderColor:'rgba(24,95,165,.15)',borderWidth:.5,fill:false,pointRadius:0,tension:.3},
+      {data:padH(TASAS),borderColor:'#185FA5',borderWidth:2.5,pointRadius:0,tension:.2,fill:false},
+      {data:padF(F.map(function(p){return p.c;})),borderColor:'#0C447C',borderWidth:2,borderDash:[5,4],
+       pointRadius:new Array(nH+DIAS_FC.length-1).fill(0).concat([5]),pointBackgroundColor:'#0C447C',tension:.3,fill:false}
+    ]
+  },
   options:{
     responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y?' Bs.S '+fmt(c.parsed.y):null,filter:i=>i.parsed.y!==null}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{
+      label:function(c){return c.parsed.y?' Bs.S '+fmt(c.parsed.y):null;},
+      filter:function(i){return i.parsed.y!==null;}
+    }}},
     scales:{
       x:{ticks:{font:{size:9},autoSkip:true,maxTicksLimit:18,maxRotation:45,color:'#888'},grid:{color:'rgba(0,0,0,.04)'}},
-      y:{ticks:{font:{size:11},callback:v=>+v.toFixed(0),color:'#888'},grid:{color:'rgba(0,0,0,.05)'},min:430,max:660}
+      y:{ticks:{font:{size:11},callback:function(v){return Math.round(v);},color:'#888'},grid:{color:'rgba(0,0,0,.05)'},min:430,max:660}
     }
   }
 });
+
+});
+</script>
+</body>
+</html>
