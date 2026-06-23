@@ -185,7 +185,7 @@ var periodos=[
   {nombre:'Marzo 2026',datos:TASAS.slice(0,11)},
   {nombre:'Abril 2026',datos:TASAS.slice(11,31)},
   {nombre:'Mayo 2026',datos:TASAS.slice(31,50)},
-  {nombre:'Junio 2026 (al 17 jun)',datos:TASAS.slice(50)}
+  {nombre:'Junio 2026 (al 23 jun)',datos:TASAS.slice(50)}
 ];
 var rows='';
 periodos.forEach(function(p){
@@ -193,7 +193,7 @@ periodos.forEach(function(p){
   rows+='<tr><td>'+p.nombre+'</td><td class="num">'+p.datos.length+'</td><td class="num">'+fmt(op)+'</td><td class="num">'+fmt(cl)+'</td><td class="num"><strong>'+fmt(a)+'</strong></td><td class="num">+'+((cl-op)/op*100).toFixed(2)+' %</td></tr>';
 });
 var q2=TASAS.slice(11),q2a=avg(q2);
-rows+='<tr class="tot"><td><strong>Trim. II 2026 (abr - 17 jun)</strong></td><td class="num">'+q2.length+'</td><td class="num">'+fmt(TASAS[11])+'</td><td class="num">'+fmt(TASAS[TASAS.length-1])+'</td><td class="num"><strong>'+fmt(q2a)+'</strong></td><td class="num">+'+((TASAS[TASAS.length-1]-TASAS[11])/TASAS[11]*100).toFixed(2)+' %</td></tr>';
+rows+='<tr class="tot"><td><strong>Trim. II 2026 (abr - 23 jun)</strong></td><td class="num">'+q2.length+'</td><td class="num">'+fmt(TASAS[11])+'</td><td class="num">'+fmt(TASAS[TASAS.length-1])+'</td><td class="num"><strong>'+fmt(q2a)+'</strong></td><td class="num">+'+((TASAS[TASAS.length-1]-TASAS[11])/TASAS[11]*100).toFixed(2)+' %</td></tr>';
 document.getElementById('avg-tb').innerHTML=rows;
 
 // ── CALIBRACION ──────────────────────────────────────────────────────────────
