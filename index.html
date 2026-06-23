@@ -233,7 +233,9 @@ if(hasAny){
 // ── GRAFICO ──────────────────────────────────────────────────────────────────
 var etiquetas=allDates.concat(DIAS_FC);
 var nH=allDates.length;
-function padH(a){return a.concat(new Array(DIAS_FC.length).fill(null));}
+// padH: historical data + nulls for forecast zone, with last value repeated once to connect
+function padH(a){return a.concat([a[a.length-1]]).concat(new Array(DIAS_FC.length-1).fill(null));}
+// padF: nH-1 nulls + base value (to connect at last historical point) + 10 forecast values
 function padF(a){return new Array(nH-1).fill(null).concat(a);}
 
 var sepPlugin={id:'sep',afterDraw:function(ch){
@@ -245,6 +247,9 @@ var sepPlugin={id:'sep',afterDraw:function(ch){
   ctx.textAlign='center';ctx.fillText('Hoy',px,ysc.top-4);ctx.restore();
 }};
 
+var _allF=F.map(function(p){return p.u2;});
+var yMin=Math.floor((Math.min.apply(null,TASAS)-20)/20)*20;
+var yMax=Math.ceil((Math.max.apply(null,_allF)+20)/20)*20;
 new Chart(document.getElementById('chart'),{
   type:'line',
   plugins:[sepPlugin],
@@ -266,7 +271,7 @@ new Chart(document.getElementById('chart'),{
     }}},
     scales:{
       x:{ticks:{font:{size:9},autoSkip:true,maxTicksLimit:18,maxRotation:45,color:'#888'},grid:{color:'rgba(0,0,0,.04)'}},
-      y:{ticks:{font:{size:11},callback:function(v){return Math.round(v);},color:'#888'},grid:{color:'rgba(0,0,0,.05)'},min:430,max:660}
+      y:{ticks:{font:{size:11},callback:function(v){return Math.round(v);},color:'#888'},grid:{color:'rgba(0,0,0,.05)'},min:yMin,max:yMax}
     }
   }
 });
