@@ -53,7 +53,7 @@ tr.tot td{font-weight:700;background:#f0f6fd;}
 </div>
 
 <div class="nota">
-  <strong>Uso contable.</strong> Tipo de cambio oficial BCV y proyecciones para los proximos 10 dias habiles segun NIC 21 / ASC 830.
+  <strong>Uso contable.</strong> Tipo de cambio oficial BCV y proyecciones para los proximos 10 dias habiles. Para conversion segun NIC 21 / ASC 830, use los promedios de la tabla inferior.
 </div>
 
 <div class="cards">
@@ -80,7 +80,7 @@ tr.tot td{font-weight:700;background:#f0f6fd;}
   <h2>Consultar fecha especifica</h2>
   <div class="date-row">
     <label for="date-sel">Seleccionar fecha:</label>
-    <select id="date-sel"><option value="">— elegir —</option></select>
+    <select id="date-sel"><option value="">-- elegir --</option></select>
   </div>
   <div id="date-result-wrap" style="display:none">
     <div class="date-result">
@@ -104,7 +104,7 @@ tr.tot td{font-weight:700;background:#f0f6fd;}
 </div>
 
 <div class="sec">
-  <h2>Calibracion del modelo &mdash; prediccion vs real</h2>
+  <h2>Calibracion del modelo — prediccion vs real</h2>
   <div id="cal-kpis" class="kpis" style="display:none">
     <div class="kpi">
       <div class="kl">Sesgo 1 semana</div>
@@ -162,8 +162,7 @@ var DIAS_FC = ['25 jun','26 jun','29 jun','30 jun','1 jul','2 jul','3 jul','6 ju
 // actual1w = TASAS[i+5], actual2w = TASAS[i+10] (calculados dinamicamente)
 var FORECAST_LOG = [
   {fecha:'17 jun',i:59,pred1w:611.52,pred2w:630.91,ci1w_l:603.95,ci1w_u:619.19,ci2w_l:619.68,ci2w_u:642.55},
-  {fecha:'17 jun',i:60,pred1w:616.08,pred2w:636.01,ci1w_l:608.67,ci1w_u:623.59,ci2w_l:625.21,ci2w_u:646.99},
-  {fecha:'18 jun',i:61,pred1w:622.36,pred2w:643.06,ci1w_l:614.85,ci1w_u:629.96,ci2w_l:632.11,ci2w_u:654.2},
+  {fecha:'17 jun',i:60,pred1w:616.08,pred2w:636.01,ci1w_l:608.67,ci1w_u:623.59,ci2w_l:625.21,ci2w_u:646.99},{fecha:'18 jun',i:61,pred1w:622.36,pred2w:643.06,ci1w_l:614.85,ci1w_u:629.96,ci2w_l:632.11,ci2w_u:654.2},
   {fecha:'19 jun',i:62,pred1w:627.94,pred2w:649.19,ci1w_l:620.5,ci1w_u:635.48,ci2w_l:638.33,ci2w_u:660.23},
   {fecha:'22 jun',i:63,pred1w:633.46,pred2w:655.22,ci1w_l:626.1,ci1w_u:640.91,ci2w_l:644.48,ci2w_u:666.14},
   {fecha:'23 jun',i:64,pred1w:639.17,pred2w:661.47,ci1w_l:631.88,ci1w_u:646.55,ci2w_l:650.83,ci2w_u:672.29},
@@ -202,20 +201,20 @@ document.getElementById('f1r').textContent='Rango 97%: Bs.S '+fmt(F[5].l2)+' - '
 document.getElementById('f2v').textContent='Bs.S '+fmt(F[10].c);
 document.getElementById('f2r').textContent='Rango 97%: Bs.S '+fmt(F[10].l2)+' - '+fmt(F[10].u2);
 
-// ── SELECTOR DE FECHA ────────────────────────────────────────────────────────
+// Selector de fecha
 var sel=document.getElementById('date-sel');
 DIAS_FC.forEach(function(d,idx){
   var opt=document.createElement('option');
-  opt.value=idx+1;
+  opt.value=String(idx+1);
   opt.textContent=d;
   sel.appendChild(opt);
 });
 sel.onchange=function(){
-  var t=parseInt(sel.value);
+  var t=parseInt(sel.value,10);
   if(!t){document.getElementById('date-result-wrap').style.display='none';return;}
   document.getElementById('dr-val').textContent='Bs.S '+fmt(F[t].c);
   document.getElementById('dr-dias').textContent='dia '+t+' habil';
-  document.getElementById('dr-range').textContent='Bs.S '+fmt(F[t].l2)+' – '+fmt(F[t].u2);
+  document.getElementById('dr-range').textContent='Bs.S '+fmt(F[t].l2)+' - '+fmt(F[t].u2);
   document.getElementById('date-result-wrap').style.display='block';
 };
 
@@ -257,6 +256,7 @@ if(hasAny){
 var etiquetas=allDates.concat(DIAS_FC);
 var nH=allDates.length;
 function padH(a){return a.concat(new Array(DIAS_FC.length).fill(null));}
+// padF: nH-1 nulls + base value (to connect at last historical point) + 10 forecast values
 function padF(a){return new Array(nH-1).fill(null).concat(a);}
 
 var sepPlugin={id:'sep',afterDraw:function(ch){
@@ -279,4 +279,6 @@ new Chart(document.getElementById('chart'),{
     datasets:[
       {data:padF(F.map(function(p){return p.u2;})),borderColor:'rgba(24,95,165,.15)',borderWidth:.5,fill:'+1',backgroundColor:'rgba(24,95,165,.10)',pointRadius:0,tension:.3},
       {data:padF(F.map(function(p){return p.l2;})),borderColor:'rgba(24,95,165,.15)',borderWidth:.5,fill:false,pointRadius:0,tension:.3},
-      {data:padH(TASAS),borderColor:'#185FA5',borderWidth:2.5,pointRadius:0,tension:.2,f
+      {data:padH(TASAS),borderColor:'#185FA5',borderWidth:2.5,pointRadius:0,tension:.2,fill:false},
+      {data:padF(F.map(function(p){return p.c;})),borderColor:'#0C447C',borderWidth:2,borderDash:[5,4],
+       pointRadius:new Array(nH+DIAS_FC.len
