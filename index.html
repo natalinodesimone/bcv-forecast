@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tipo de Cambio BCV — USD/VES</title>
+<title>Tipo de Cambio BCV &mdash; USD/VES</title>
 <style>
 :root{color-scheme:light;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -29,7 +29,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-siz
 table{width:100%;border-collapse:collapse;font-size:12px;}
 th{background:#f5f5f3;border:1px solid #e0e0e0;padding:7px 10px;font-weight:600;text-align:left;color:#333;}
 td{border:1px solid #ebebeb;padding:7px 10px;}
-tr.tot td{font-weight:700;background:#f0f6fd;}
 .num{text-align:right;font-variant-numeric:tabular-nums;}
 .ok{color:#15803d;font-weight:600;}
 .err{color:#b91c1c;font-weight:600;}
@@ -104,21 +103,21 @@ tr.tot td{font-weight:700;background:#f0f6fd;}
 </div>
 
 <div class="sec">
-  <h2>Calibracion del modelo — prediccion vs real</h2>
+  <h2>Calibracion del modelo &mdash; prediccion vs real</h2>
   <div id="cal-kpis" class="kpis" style="display:none">
     <div class="kpi">
       <div class="kl">Sesgo 1 semana</div>
-      <div class="kv" id="kv-bias1">—</div>
+      <div class="kv" id="kv-bias1">&mdash;</div>
       <div class="ks">promedio (real - predicho)</div>
     </div>
     <div class="kpi">
       <div class="kl">RMSE 1 semana</div>
-      <div class="kv" id="kv-rmse1">—</div>
+      <div class="kv" id="kv-rmse1">&mdash;</div>
       <div class="ks">error cuadratico medio</div>
     </div>
     <div class="kpi">
       <div class="kl">Dentro rango 97%</div>
-      <div class="kv" id="kv-ci1">—</div>
+      <div class="kv" id="kv-ci1">&mdash;</div>
       <div class="ks">veces que el real cayo en el rango</div>
     </div>
   </div>
@@ -127,10 +126,9 @@ tr.tot td{font-weight:700;background:#f0f6fd;}
     <table>
       <thead>
         <tr>
-          <th>Fecha pred.</th>
-          <th class="num">Tasa base</th>
+          <th>Fecha</th>
+          <th class="num">Tasa real</th>
           <th class="num">Pred. 1 sem</th>
-          <th class="num">Real 1 sem</th>
           <th class="num">Error 1 sem</th>
           <th class="num">En rango?</th>
           <th class="num">Pred. 2 sem</th>
@@ -150,23 +148,17 @@ tr.tot td{font-weight:700;background:#f0f6fd;}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
 <script>
 
-// ── DATOS HISTORICOS ─────────────────────────────────────────────────────────
 var allDates = ['16 mar','17 mar','18 mar','20 mar','23 mar','24 mar','25 mar','26 mar','27 mar','30 mar','31 mar','1 abr','6 abr','7 abr','8 abr','9 abr','10 abr','13 abr','14 abr','15 abr','16 abr','17 abr','20 abr','21 abr','22 abr','23 abr','24 abr','27 abr','28 abr','29 abr','30 abr','4 may','5 may','6 may','7 may','8 may','11 may','12 may','13 may','14 may','15 may','19 may','20 may','21 may','22 may','25 may','26 may','27 may','28 may','29 may','1 jun','2 jun','3 jun','4 jun','5 jun','9 jun','10 jun','11 jun','12 jun','15 jun','17 jun','18 jun','19 jun','22 jun','23 jun','24 jun','26 jun'];
 var TASAS = [446.8,448.36,451.5,455.25,457.07,459.45,462.66,466.6,468.51,471.7,473.87,473.91,474.05,474.53,475.0,475.95,476.43,477.14,477.62,478.58,479.77,480.25,481.21,481.69,482.75,483.33,483.86,484.74,485.22,486.19,487.11,489.55,490.04,494.11,496.83,499.86,500.46,504.91,508.6,510.78,515.17,517.96,520.91,523.67,526.86,530.5,535.38,540.04,544.57,549.37,554.42,557.97,558.64,560.37,563.28,567.68,572.67,577.54,582.68,587.4,596.78,602.33,607.39,612.43,617.63,621.53,622.21];
 var CAMBIOS = [0.003500,0.007000,0.008300,0.004000,0.005200,0.007000,0.008500,0.004100,0.006800,0.004600,0.000100,0.000300,0.001000,0.001000,0.002000,0.001000,0.001500,0.001000,0.002000,0.002500,0.001000,0.002000,0.001000,0.002200,0.001200,0.001100,0.001800,0.001000,0.002000,0.001900,0.005000,0.001000,0.008300,0.005500,0.006100,0.001200,0.008900,0.007300,0.004300,0.008600,0.005400,0.005700,0.005300,0.006100,0.006900,0.009200,0.008700,0.008400,0.008800,0.009200,0.006400,0.001200,0.003100,0.005200,0.007800,0.008800,0.008500,0.008900,0.008100,0.015969,0.009300,0.008400,0.008298,0.008491,0.006314,0.001094];
 var DIAS_FC = ['29 jun','30 jun','1 jul','2 jul','3 jul','6 jul','7 jul','8 jul','9 jul','10 jul'];
 
-// ── LOG DE PREDICCIONES (actualizado por la tarea diaria) ────────────────────
-// Cada entrada: {fecha, i, pred1w, pred2w, ci1w_l, ci1w_u, ci2w_l, ci2w_u}
-// i = indice del ultimo elemento de TASAS en el momento de la prediccion
-// actual1w = TASAS[i+5], actual2w = TASAS[i+10] (calculados dinamicamente)
 var FORECAST_LOG = [
   {fecha:'17 jun',i:60,pred1w:616.08,pred2w:636.01,ci1w_l:608.67,ci1w_u:623.59,ci2w_l:625.21,ci2w_u:646.99},{fecha:'18 jun',i:61,pred1w:622.36,pred2w:643.06,ci1w_l:614.85,ci1w_u:629.96,ci2w_l:632.11,ci2w_u:654.2},
   {fecha:'19 jun',i:62,pred1w:627.94,pred2w:649.19,ci1w_l:620.5,ci1w_u:635.48,ci2w_l:638.33,ci2w_u:660.23},
   {fecha:'22 jun',i:63,pred1w:633.46,pred2w:655.22,ci1w_l:626.1,ci1w_u:640.91,ci2w_l:644.48,ci2w_u:666.14},
   {fecha:'23 jun',i:64,pred1w:639.17,pred2w:661.47,ci1w_l:631.88,ci1w_u:646.55,ci2w_l:650.83,ci2w_u:672.29},
-  {fecha:'24 jun',i:65,pred1w:644.04,pred2w:667.36,ci1w_l:634.97,ci1w_u:653.23,ci2w_l:654.1,ci2w_u:680.88}
-,
+  {fecha:'24 jun',i:65,pred1w:644.04,pred2w:667.36,ci1w_l:634.97,ci1w_u:653.23,ci2w_l:654.1,ci2w_u:680.88},
   {fecha:'26 jun',i:66,pred1w:643.56,pred2w:665.64,ci1w_l:633.86,ci1w_u:653.41,ci2w_l:651.5,ci2w_u:680.1}
 ];
 
@@ -192,17 +184,15 @@ for(var t=0;t<=10;t++){
   });
 }
 
-function fmt(v){return v.toLocaleString('es-VE',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmt(v){return v.toLocaleString('es-VE',{minimumFractionDigits:2,maximumFractionDigits:2}),;}
 function avg(a){return a.reduce(function(s,v){return s+v;},0)/a.length;}
 
-// Tarjetas
 document.getElementById('bv').textContent='Bs.S '+fmt(TASAS[TASAS.length-1]);
 document.getElementById('f1v').textContent='Bs.S '+fmt(F[5].c);
 document.getElementById('f1r').textContent='Rango 97%: Bs.S '+fmt(F[5].l2)+' - '+fmt(F[5].u2);
 document.getElementById('f2v').textContent='Bs.S '+fmt(F[10].c);
 document.getElementById('f2r').textContent='Rango 97%: Bs.S '+fmt(F[10].l2)+' - '+fmt(F[10].u2);
 
-// Selector de fecha
 var sel=document.getElementById('date-sel');
 DIAS_FC.forEach(function(d,idx){
   var opt=document.createElement('option');
@@ -214,30 +204,38 @@ sel.onchange=function(){
   var t=parseInt(sel.value,10);
   if(!t){document.getElementById('date-result-wrap').style.display='none';return;}
   document.getElementById('dr-val').textContent='Bs.S '+fmt(F[t].c);
-  document.getElementById('dr-dias').textContent='dia '+t+' habil';
+  document.getElementById('dr-dias').textContent='dia 't+' habil';
   document.getElementById('dr-range').textContent='Bs.S '+fmt(F[t].l2)+' - '+fmt(F[t].u2);
   document.getElementById('date-result-wrap').style.display='block';
 };
 
-// ── CALIBRACION ──────────────────────────────────────────────────────────────
+// CALIBRACION
 var calRows='';
 var resolved1w=[];
 var inCI=0;
 var hasAny=false;
 
 FORECAST_LOG.forEach(function(e){
-  var a1=TASAS[e.i+5]||null;
-  var a2=TASAS[e.i+10]||null;
-  var err1=a1?parseFloat((a1-e.pred1w).toFixed(2)):null;
-  var err2=a2?parseFloat((a2-e.pred2w).toFixed(2)):null;
-  var inRange=a1?(a1>=e.ci1w_l && a1<=e.ci1w_u):null;
+  var a1=(e.i+5<TASAS.length)?TASAS[e.i+5]:null;
+  var a2=(e.i+10<TASAS.length)?TASAS[e.i+10]:null;
+  var d1=a1!==null?allDates[e.i+5]:null;
+  var d2=a2!==null?allDates[e.i+10]:null;
+  var err1=a1!==null?parseFloat((a1-e.pred1w).toFixed(2)):null;
+  var err2=a2!==null?parseFloat((a2-e.pred2w).toFixed(2)):null;
+  var inRange=a1!==null?(a1>=e.ci1w_l && a1<=e.ci1w_u):null;
 
   if(a1!==null){resolved1w.push(err1);if(inRange)inCI++;hasAny=true;}
 
-  var td1=a1?('<td class="num">'+fmt(a1)+'</td><td class="num '+(err1>=0?'ok':'err')+'">'+( err1>=0?'+':'')+fmt(err1)+'</td><td class="num '+(inRange?'ok':'err')+'">'+(inRange?'Si':'No')+'</td>'):'<td class="num nd">pendiente</td><td class="num nd">—</td><td class="num nd">—</td>';
-  var td2=a2?('<td class="num">'+fmt(a2)+'</td><td class="num '+(err2>=0?'ok':'err')+'">'+( err2>=0?'+':'')+fmt(err2)+'</td>'):'<td class="num nd">pendiente</td><td class="num nd">—</td>';
-
-  calRows+='<tr><td>'+e.fecha+'</td><td class="num">'+fmt(TASAS[e.i])+'</td><td class="num">'+fmt(e.pred1w)+'</td>'+td1+'<td class="num">'+fmt(e.pred2w)+'</td>'+td2+'</tr>';
+  var row=
+    (d1?'<td>'+d1+'</td>':'<td class="nd">pendiente</td>')+
+    (a1!==null?'<td class="num">'+fmt(a1)+'</td>':'<td class="num nd">&mdash;</td>')+
+    '<td class="num">'+fmt(e.pred1w)+'</td>'+
+    (err1!==null?'<td class="num '+(err1>=0?'ok':'err')+'">'+(err1>=0?'+':'')+fmt(err1)+'</td>':'<td class="num nd">&mdash;</td>')+
+    (inRange!==null?'<td class="num '+(inRange?'ok':'err')+'">'+(inRange?'Si':'No')+'</td>':'<td class="num nd">&mdash;</td>')+
+    '<td class="num">'+fmt(e.pred2w)+'</td>'+
+    (a2!==null?'<td class="num">'+fmt(a2)+'<br><small style="color:#888;font-size:10px">'+d2+'</small></td>':'<td class="num nd">pendiente</td>')+
+    (err2!==null?'<td class="num '+(err2>=0?'ok':'err')+'">'+(err2>=0?'+':'')+fmt(err2)+'</td>':'<td class="num nd">&mdash;</td>');
+  calRows+='<tr>'+row+'</tr>';
 });
 
 if(hasAny){
@@ -253,11 +251,10 @@ if(hasAny){
   document.getElementById('kv-ci1').textContent=pci+'%';
 }
 
-// ── GRAFICO ──────────────────────────────────────────────────────────────────
+// GRAFICO
 var etiquetas=allDates.concat(DIAS_FC);
 var nH=allDates.length;
 function padH(a){return a.concat(new Array(DIAS_FC.length).fill(null));}
-// padF: nH-1 nulls + base value (to connect at last historical point) + 10 forecast values
 function padF(a){return new Array(nH-1).fill(null).concat(a);}
 
 var sepPlugin={id:'sep',afterDraw:function(ch){
