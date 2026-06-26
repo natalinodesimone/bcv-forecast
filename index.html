@@ -184,7 +184,7 @@ for(var t=0;t<=10;t++){
   });
 }
 
-function fmt(v){return v.toLocaleString('es-VE',{minimumFractionDigits:2,maximumFractionDigits:2}),;}
+function fmt(v){return v.toLocaleString('es-VE',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function avg(a){return a.reduce(function(s,v){return s+v;},0)/a.length;}
 
 document.getElementById('bv').textContent='Bs.S '+fmt(TASAS[TASAS.length-1]);
@@ -204,7 +204,7 @@ sel.onchange=function(){
   var t=parseInt(sel.value,10);
   if(!t){document.getElementById('date-result-wrap').style.display='none';return;}
   document.getElementById('dr-val').textContent='Bs.S '+fmt(F[t].c);
-  document.getElementById('dr-dias').textContent='dia 't+' habil';
+  document.getElementById('dr-dias').textContent='dia '+t+' habil';
   document.getElementById('dr-range').textContent='Bs.S '+fmt(F[t].l2)+' - '+fmt(F[t].u2);
   document.getElementById('date-result-wrap').style.display='block';
 };
@@ -219,7 +219,7 @@ FORECAST_LOG.forEach(function(e){
   var a1=(e.i+5<TASAS.length)?TASAS[e.i+5]:null;
   var a2=(e.i+10<TASAS.length)?TASAS[e.i+10]:null;
   var d1=a1!==null?allDates[e.i+5]:null;
-  var d2=a2!=?null?allDates[e.i+10]:null;
+  var d2=a2!==null?allDates[e.i+10]:null;
   var err1=a1!==null?parseFloat((a1-e.pred1w).toFixed(2)):null;
   var err2=a2!==null?parseFloat((a2-e.pred2w).toFixed(2)):null;
   var inRange=a1!==null?(a1>=e.ci1w_l && a1<=e.ci1w_u):null;
