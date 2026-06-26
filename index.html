@@ -219,7 +219,7 @@ FORECAST_LOG.forEach(function(e){
   var a1=(e.i+5<TASAS.length)?TASAS[e.i+5]:null;
   var a2=(e.i+10<TASAS.length)?TASAS[e.i+10]:null;
   var d1=a1!==null?allDates[e.i+5]:null;
-  var d2=a2!==null?allDates[e.i+10]:null;
+  var d2=a2!=?null?allDates[e.i+10]:null;
   var err1=a1!==null?parseFloat((a1-e.pred1w).toFixed(2)):null;
   var err2=a2!==null?parseFloat((a2-e.pred2w).toFixed(2)):null;
   var inRange=a1!==null?(a1>=e.ci1w_l && a1<=e.ci1w_u):null;
