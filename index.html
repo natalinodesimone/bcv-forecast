@@ -30,11 +30,13 @@ table{width:100%;border-collapse:collapse;font-size:12px;}
 th{background:#f5f5f3;border:1px solid #e0e0e0;padding:7px 10px;font-weight:600;text-align:left;color:#333;}
 td{border:1px solid #ebebeb;padding:7px 10px;}
 .num{text-align:right;font-variant-numeric:tabular-nums;}
+.ctr{text-align:center;font-variant-numeric:tabular-nums;}
 .ok{color:#15803d;font-weight:600;}
 .err{color:#b91c1c;font-weight:600;}
 .nd{color:#aaa;font-style:italic;}
 .footer{font-size:11px;color:#999;border-top:1px solid #e0e0e0;padding-top:12px;margin-top:4px;line-height:1.6;}
 .empty-note{color:#999;font-size:12px;padding:16px 0;text-align:center;}
+.cal-note{font-size:11px;color:#888;margin-bottom:10px;line-height:1.5;}
 .date-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
 .date-row label{font-size:12px;color:#555;white-space:nowrap;}
 .date-row select{border:1px solid #ccc;border-radius:6px;padding:6px 10px;font-size:13px;color:#1a1a1a;background:#fff;cursor:pointer;}
@@ -123,17 +125,17 @@ td{border:1px solid #ebebeb;padding:7px 10px;}
   </div>
   <div id="cal-empty" class="empty-note">Los primeros datos de calibracion estaran disponibles en aproximadamente 1 semana.</div>
   <div id="cal-table-wrap" style="display:none">
+    <div class="cal-note">Ultimos 10 dias con tasa real publicada. "Pendiente" indica que el log de predicciones todavia no llega tan atras.</div>
     <table>
       <thead>
         <tr>
           <th>Fecha</th>
-          <th class="num">Tasa real</th>
           <th class="num">Pred. 1 sem</th>
-          <th class="num">Error 1 sem</th>
+          <th class="num">Desviacion</th>
           <th class="num">En rango?</th>
           <th class="num">Pred. 2 sem</th>
-          <th class="num">Real 2 sem</th>
-          <th class="num">Error 2 sem</th>
+          <th class="num">Desviacion</th>
+          <th class="num">En rango?</th>
         </tr>
       </thead>
       <tbody id="cal-tb"></tbody>
@@ -154,14 +156,14 @@ var CAMBIOS = [0.0035,0.007,0.0083,0.004,0.0052,0.007,0.0085,0.0041,0.0068,0.004
 var DIAS_FC = ['7 jul','8 jul','9 jul','10 jul','13 jul','14 jul','15 jul','16 jul','17 jul','20 jul'];
 
 var FORECAST_LOG = [
-  {fecha:'17 jun',i:60,pred1w:616.08,pred2w:636.01,ci1w_l:608.67,ci1w_u:623.59,ci2w_l:625.21,ci2w_u:646.99},{fecha:'18 jun',i:61,pred1w:622.36,pred2w:643.06,ci1w_l:614.85,ci1w_u:629.96,ci2w_l:632.11,ci2w_u:654.2},
+  {fecha:'17 jun',i:60,pred1w:616.08,pred2w:636.01,ci1w_l:608.67,ci1w_u:623.59,ci2w_l:625.21,ci2w_u:646.99},
+  {fecha:'18 jun',i:61,pred1w:622.36,pred2w:643.06,ci1w_l:614.85,ci1w_u:629.96,ci2w_l:632.11,ci2w_u:654.2},
   {fecha:'19 jun',i:62,pred1w:627.94,pred2w:649.19,ci1w_l:620.5,ci1w_u:635.48,ci2w_l:638.33,ci2w_u:660.23},
   {fecha:'22 jun',i:63,pred1w:633.46,pred2w:655.22,ci1w_l:626.1,ci1w_u:640.91,ci2w_l:644.48,ci2w_u:666.14},
   {fecha:'23 jun',i:64,pred1w:639.17,pred2w:661.47,ci1w_l:631.88,ci1w_u:646.55,ci2w_l:650.83,ci2w_u:672.29},
   {fecha:'24 jun',i:65,pred1w:644.04,pred2w:667.36,ci1w_l:634.97,ci1w_u:653.23,ci2w_l:654.1,ci2w_u:680.88},
   {fecha:'26 jun',i:66,pred1w:643.56,pred2w:665.64,ci1w_l:633.86,ci1w_u:653.41,ci2w_l:651.5,ci2w_u:680.1},
-  {
-fecha:'29 jun',i:67,pred1w:643.33,pred2w:664.31,ci1w_l:633.22,ci1w_u:653.6,ci2w_l:649.59,ci2w_u:679.35},
+  {fecha:'29 jun',i:67,pred1w:643.33,pred2w:664.31,ci1w_l:633.22,ci1w_u:653.6,ci2w_l:649.59,ci2w_u:679.35},
   {fecha:'30 jun',i:68,pred1w:642.08,pred2w:661.72,ci1w_l:631.37,ci1w_u:652.97,ci2w_l:646.16,ci2w_u:677.65},
   {fecha:'1 jul',i:69,pred1w:654.82,pred2w:677.01,ci1w_l:641.97,ci1w_u:667.93,ci2w_l:658.29,ci2w_u:696.26},
   {fecha:'2 jul',i:70,pred1w:662.04,pred2w:685.16,ci1w_l:649.23,ci1w_u:675.1,ci2w_l:666.49,ci2w_u:704.36},
@@ -216,33 +218,68 @@ sel.onchange=function(){
   document.getElementById('date-result-wrap').style.display='block';
 };
 
-// CALIBRACION
-var calRows='';
+// CALIBRACION -- KPIs generales (sobre todo el log de predicciones)
 var resolved1w=[];
 var inCI=0;
 var hasAny=false;
 
 FORECAST_LOG.forEach(function(e){
   var a1=(e.i+5<TASAS.length)?TASAS[e.i+5]:null;
-  var a2=(e.i+10<TASAS.length)?TASAS[e.i+10]:null;
-  var d1=a1!==null?allDates[e.i+5]:null;
-  var d2=a2!==null?allDates[e.i+10]:null;
-  var err1=a1!==null?parseFloat((a1-e.pred1w).toFixed(2)):null;
-  var err2=a2!==null?parseFloat((a2-e.pred2w).toFixed(2)):null;
-  var inRange=a1!==null?(a1>=e.ci1w_l && a1<=e.ci1w_u):null;
+  if(a1!==null){
+    var err1=parseFloat((a1-e.pred1w).toFixed(2));
+    var inRange=(a1>=e.ci1w_l && a1<=e.ci1w_u);
+    resolved1w.push(err1);
+    if(inRange)inCI++;
+    hasAny=true;
+  }
+});
 
-  if(a1!==null){resolved1w.push(err1);if(inRange)inCI++;hasAny=true;}
+// CALIBRACION -- tabla transpuesta: columnas = ultimos 10 dias con tasa real publicada
+var N_COLS=10;
+var lastIdx=[];
+for(var k=Math.max(0,allDates.length-N_COLS);k<allDates.length;k++){lastIdx.push(k);}
 
-  var row=
-    (d1?'<td>'+d1+'</td>':'<td class="nd">pendiente</td>')+
-    (a1!==null?'<td class="num">'+fmt(a1)+'</td>':'<td class="num nd">&mdash;</td>')+
-    '<td class="num">'+fmt(e.pred1w)+'</td>'+
-    (err1!==null?'<td class="num '+(err1>=0?'ok':'err')+'">'+(err1>=0?'+':'')+fmt(err1)+'</td>':'<td class="num nd">&mdash;</td>')+
-    (inRange!==null?'<td class="num '+(inRange?'ok':'err')+'">'+(inRange?'Si':'No')+'</td>':'<td class="num nd">&mdash;</td>')+
-    '<td class="num">'+fmt(e.pred2w)+'</td>'+
-    (a2!==null?'<td class="num">'+fmt(a2)+'<br><small style="color:#888;font-size:10px">'+d2+'</small></td>':'<td class="num nd">pendiente</td>')+
-    (err2!==null?'<td class="num '+(err2>=0?'ok':'err')+'">'+(err2>=0?'+':'')+fmt(err2)+'</td>':'<td class="num nd">&mdash;</td>');
-  calRows+='<tr>'+row+'</tr>';
+function findByOffset(idx,offset){
+  for(var j=0;j<FORECAST_LOG.length;j++){
+    if(FORECAST_LOG[j].i+offset===idx)return FORECAST_LOG[j];
+  }
+  return null;
+}
+
+var calRows='';
+
+lastIdx.forEach(function(idx){
+  var real=TASAS[idx];
+  var e1=findByOffset(idx,5);
+  var e2=findByOffset(idx,10);
+
+  var c1,c2,c3;
+  if(e1){
+    var dev1=parseFloat((real-e1.pred1w).toFixed(2));
+    var ok1=(real>=e1.ci1w_l && real<=e1.ci1w_u);
+    c1='<td class="num">'+fmt(e1.pred1w)+'</td>';
+    c2='<td class="num '+(dev1>=0?'ok':'err')+'">'+(dev1>=0?'+':'')+fmt(dev1)+'</td>';
+    c3='<td class="num '+(ok1?'ok':'err')+'">'+(ok1?'Si':'No')+'</td>';
+  }else{
+    c1='<td class="num nd">pendiente</td>';
+    c2='<td class="num nd">&mdash;</td>';
+    c3='<td class="num nd">&mdash;</td>';
+  }
+
+  var c4,c5,c6;
+  if(e2){
+    var dev2=parseFloat((real-e2.pred2w).toFixed(2));
+    var ok2=(real>=e2.ci2w_l && real<=e2.ci2w_u);
+    c4='<td class="num">'+fmt(e2.pred2w)+'</td>';
+    c5='<td class="num '+(dev2>=0?'ok':'err')+'">'+(dev2>=0?'+':'')+fmt(dev2)+'</td>';
+    c6='<td class="num '+(ok2?'ok':'err')+'">'+(ok2?'Si':'No')+'</td>';
+  }else{
+    c4='<td class="num nd">pendiente</td>';
+    c5='<td class="num nd">&mdash;</td>';
+    c6='<td class="num nd">&mdash;</td>';
+  }
+
+  calRows+='<tr><td>'+allDates[idx]+'</td>'+c1+c2+c3+c4+c5+c6+'</tr>';
 });
 
 if(hasAny){
@@ -306,3 +343,4 @@ new Chart(document.getElementById('chart'),{
 </script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                                                     
