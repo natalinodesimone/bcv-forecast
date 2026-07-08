@@ -181,8 +181,55 @@ var Z=2.17;
 var N=CAMBIOS.length;
 var W=CAMBIOS.map(function(_,i){return Math.pow(LAM,N-1-i);});
 var TW=W.reduce(function(s,w){return s+w;},0);
-var MU=W.reduce(function(s,w,i){return s+w*CAMBIOS[i];},0)/TW;
-var SIG=Math.sqrt(W.reduce(function(s,w,i){return s+w*Math.pow(CAMBIOS[i]-MU,2);},0)/TW);
+var MU_EWMA=W.reduce(function(s,w,i){return s+w*CAMBIOS[i];},0)/TW;
+var SIG=Math.sqrt(W.reduce(function(s,w,i){return s+w*Math.pow(CAMBIOS[i]-MU_EWMA,2);},0)/TW);
+
+var EVENTOS=[
+  {fecha:'24 jun', peso_max:0.20, decae_dias:30, nota:'Terremotos M7.2/M7.5 Yaracuy -- gasto de reconstruccion'}
+];
+
+var ANCLA={fecha_referencia:'6 jul', dias_totales:19, nivel:698.25, peso:0.40, nota:'Consenso cierre julio 2026 -- Ecoanalitica + Greyhound Trading, Bloomberg Linea 2 jul 2026'};
+
+var base=TASAS[TASAS.length-1];
+var todayIdx=allDates.length-1;
+
+function ewmaMean(serie,lam){
+  var w=serie.map(function(_,i){return Math.pow(lam,serie.length-1-i);});
+  var tw=w.reduce(function(s,x){return s+x;},0);
+  return w.reduce(function(s,x,i){return s+x*serie[i];},0)/tw;
+}
+
+var activos=EVENTOS.map(function(e){
+  var eqIdx=allDates.indexOf(e.fecha);
+  var diasDesde=todayIdx-eqIdx;
+  return {e:e, eqIdx:eqIdx, diasDesde:diasDesde};
+}).filter(function(x){return x.eqIdx>=0 && x.diasDesde>=0 && x.diasDesde<x.e.decae_dias;})
+  .sort(function(a,b){return b.eqIdx-a.eqIdx;});
+
+var MU_PRE, MU_EVENTO=0, PESO_EVENTO=0;
+if(activos.length){
+  var act=activos[0];
+  var pre=CAMBIOS.slice(0,act.eqIdx);
+  var post=CAMBIOS.slice(act.eqIdx);
+  MU_PRE=ewmaMean(pre,LAM);
+  MU_EVENTO=post.reduce(function(s,v){return s+v;},0)/post.length;
+  PESO_EVENTO=act.e.peso_max*Math.max(0,1-act.diasDesde/act.e.decae_dias);
+}else{
+  MU_PRE=MU_EWMA;
+}
+
+var PESO_ANCLA=0, MU_ANCLA=0;
+var anclaRefIdx=allDates.indexOf(ANCLA.fecha_referencia);
+if(anclaRefIdx>=0){
+  var anclaDiasRestantes=ANCLA.dias_totales-(todayIdx-anclaRefIdx);
+  if(anclaDiasRestantes>0){
+    MU_ANCLA=Math.pow(ANCLA.nivel/base,1/anclaDiasRestantes)-1;
+    PESO_ANCLA=ANCLA.peso;
+  }
+}
+
+var PESO_PRE=1-PESO_EVENTO-PESO_ANCLA;
+var MU=PESO_PRE*MU_PRE+PESO_EVENTO*MU_EVENTO+PESO_ANCLA*MU_ANCLA;
 
 var F=[];
 var base=TASAS[TASAS.length-1];
@@ -345,4 +392,3 @@ new Chart(document.getElementById('chart'),{
 </script>
 </body>
 </html>
-                                                                                                                                                                                                                                           
