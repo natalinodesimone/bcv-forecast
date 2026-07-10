@@ -221,7 +221,7 @@ if(activos.length){
   MU_PRE=MU_EWMA;
 }
 
-var PESO_NOTICIAS_MAX=NOTICIAS.peso_max+(activos.length?(activos[0].e.peso_max-PESO_EVENTO):0);
+var PESO_NOTICIAS_MAX=Math.min(0.20,NOTICIAS.peso_max+(activos.length?(activos[0].e.peso_max-PESO_EVENTO):0));
 var MU_NOTICIAS=NOTICIAS.nivel*K_NOTICIAS*SIG;
 var PESO_NOTICIAS=PESO_NOTICIAS_MAX*(Math.abs(NOTICIAS.nivel)/2);
 
