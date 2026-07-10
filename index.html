@@ -190,7 +190,8 @@ var EVENTOS=[
   {fecha:'24 jun', peso_max:0.20, decae_dias:30, nota:'Terremotos M7.2/M7.5 Yaracuy -- gasto de reconstruccion'}
 ];
 
-var ANCLA={fecha_referencia:'6 jul', dias_totales:19, nivel:698.25, peso:0.0, nota:'DESACTIVADA 10 jul 2026 por decision de Natalino -- el pronostico no debe basarse en consenso de analistas. El nivel/fecha se conservan solo como referencia historica; peso=0 la anula del blend.'};
+var NOTICIAS={fecha_actualizacion:'10 jul', peso_max:0.10, nivel:2, nota:'Presion devaluatoria fuerte: BCV declaro estrategia explicita de unificacion cambiaria (cierre de brecha oficial/paralelo) desde inicios de julio, mas gasto fiscal sostenido de reconstruccion post-terremoto. Escala: -2 fuerte distension, -1 distension moderada, 0 neutral, 1 presion moderada, 2 presion fuerte. Fuente: Banca y Negocios, LaPatilla, Bloomberg Linea (7-9 jul 2026). Revisado cada viernes.'};
+var K_NOTICIAS=0.75;
 
 var base=TASAS[TASAS.length-1];
 var todayIdx=allDates.length-1;
@@ -220,18 +221,11 @@ if(activos.length){
   MU_PRE=MU_EWMA;
 }
 
-var PESO_ANCLA=0, MU_ANCLA=0;
-var anclaRefIdx=allDates.indexOf(ANCLA.fecha_referencia);
-if(anclaRefIdx>=0){
-  var anclaDiasRestantes=ANCLA.dias_totales-(todayIdx-anclaRefIdx);
-  if(anclaDiasRestantes>0){
-    MU_ANCLA=Math.pow(ANCLA.nivel/base,1/anclaDiasRestantes)-1;
-    PESO_ANCLA=ANCLA.peso;
-  }
-}
+var MU_NOTICIAS=NOTICIAS.nivel*K_NOTICIAS*SIG;
+var PESO_NOTICIAS=NOTICIAS.peso_max*(Math.abs(NOTICIAS.nivel)/2);
 
-var PESO_PRE=1-PESO_EVENTO-PESO_ANCLA;
-var MU=PESO_PRE*MU_PRE+PESO_EVENTO*MU_EVENTO+PESO_ANCLA*MU_ANCLA;
+var PESO_PRE=1-PESO_EVENTO-PESO_NOTICIAS;
+var MU=PESO_PRE*MU_PRE+PESO_EVENTO*MU_EVENTO+PESO_NOTICIAS*MU_NOTICIAS;
 
 var F=[];
 var base=TASAS[TASAS.length-1];
