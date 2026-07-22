@@ -50,7 +50,7 @@ td{border:1px solid #ebebeb;padding:7px 10px;}
 
 <div class="hdr">
   <h1>Tipo de Cambio Oficial BCV &mdash; USD/VES</h1>
-  <div class="sub">Banco Central de Venezuela &bull; Ultima actualizacion: 21 de julio de 2026 &bull; EMPA lambda=0.94 &bull; Calibracion: 16 mar - 21 jul 2026 (84 sesiones)</div>
+  <div class="sub">Banco Central de Venezuela &bull; Ultima actualizacion: 22 de julio de 2026 &bull; EMPA lambda=0.94 &bull; Calibracion: 16 mar - 22 jul 2026 (85 sesiones)</div>
 </div>
 
 <div class="nota">
@@ -61,18 +61,18 @@ td{border:1px solid #ebebeb;padding:7px 10px;}
   <div class="card">
     <div class="cl">Tasa BCV oficial</div>
     <div class="cv" id="bv">737.23</div>
-    <div class="cs">USD/VES - 21 jul 2026</div>
+    <div class="cs">USD/VES - 22 jul 2026</div>
   </div>
   <div class="card hi">
     <div class="cl">Proyeccion - 1 semana</div>
     <div class="cv" id="f1v">cargando...</div>
-    <div class="cs">28 jul 2026</div>
+    <div class="cs">29 jul 2026</div>
     <div class="cr" id="f1r"></div>
   </div>
   <div class="card hi">
     <div class="cl">Proyeccion - 2 semanas</div>
     <div class="cv" id="f2v">cargando...</div>
-    <div class="cs">4 ago 2026</div>
+    <div class="cs">5 ago 2026</div>
     <div class="cr" id="f2r"></div>
   </div>
 </div>
@@ -151,10 +151,10 @@ td{border:1px solid #ebebeb;padding:7px 10px;}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js"></script>
 <script>
 
-var allDates=['16 mar','17 mar','18 mar','20 mar','23 mar','24 mar','25 mar','26 mar','27 mar','30 mar','31 mar','1 abr','6 abr','7 abr','8 abr','9 abr','10 abr','13 abr','14 abr','15 abr','16 abr','17 abr','20 abr','21 abr','22 abr','23 abr','24 abr','27 abr','28 abr','29 abr','30 abr','4 may','5 may','6 may','7 may','8 may','11 may','12 may','13 may','14 may','15 may','19 may','20 may','21 may','22 may','25 may','26 may','27 may','28 may','29 may','1 jun','2 jun','3 jun','4 jun','5 jun','9 jun','10 jun','11 jun','12 jun','15 jun','17 jun','18 jun','19 jun','22 jun','23 jun','24 jun','26 jun','29 jun','30 jun','1 jul','2 jul','3 jul','6 jul','7 jul','8 jul','9 jul','10 jul','13 jul','14 jul','15 jul','16 jul','17 jul','20 jul','21 jul'];
-var TASAS=[446.8,448.36,451.5,455.25,457.07,459.45,462.66,466.6,468.51,471.7,473.87,473.91,474.05,474.53,475.0,475.95,476.43,477.14,477.62,478.58,479.77,480.25,481.21,481.69,482.75,483.33,483.86,484.74,485.22,486.19,487.11,489.55,490.04,494.11,496.83,499.86,500.46,504.91,508.6,510.78,515.17,517.96,520.91,523.67,526.86,530.5,535.38,540.04,544.57,549.37,554.42,557.97,558.64,560.37,563.28,567.68,572.67,577.54,582.68,587.4,596.78,602.33,607.39,612.43,617.63,621.53,622.21,623.02,623.02,633.36,639.7,652.97,667.05,674.93,685.94,700.22,709.69,721.35,724.0,725.75,727.45,732.48,736.93,737.23];
-var CAMBIOS=[0.0035,0.007,0.0083,0.004,0.0052,0.007,0.0085,0.0041,0.0068,0.0046,0.0001,0.0003,0.001,0.001,0.002,0.001,0.0015,0.001,0.002,0.0025,0.001,0.002,0.001,0.0022,0.0012,0.0011,0.0018,0.001,0.002,0.0019,0.005,0.001,0.0083,0.0055,0.0061,0.0012,0.0089,0.0073,0.0043,0.0086,0.0054,0.0057,0.0053,0.0061,0.0069,0.0092,0.0087,0.0084,0.0088,0.0092,0.0064,0.0012,0.0031,0.0052,0.0078,0.0088,0.0085,0.0089,0.0081,0.015969,0.0093,0.0084,0.008298,0.008491,0.006314,0.001094,0.001302,0.0,0.016596577958974082,0.010010104837691094,0.020744098796310742,0.021563012083250267,0.011813207405741693,0.0163128028,0.020818147359827347,0.013524320927708474,0.01642970874607218,0.0036736674291259126,0.0024171270718232043,0.0023424044092318916,0.0069145645748848,0.006075251201397897,0.0004070942966089971];
-var DIAS_FC=['22 jul','23 jul','24 jul','27 jul','28 jul','29 jul','30 jul','31 jul','3 ago','4 ago'];
+var allDates=['16 mar', '17 mar', '18 mar', '20 mar', '23 mar', '24 mar', '25 mar', '26 mar', '27 mar', '30 mar', '31 mar', '1 abr', '6 abr', '7 abr', '8 abr', '9 abr', '10 abr', '13 abr', '14 abr', '15 abr', '16 abr', '17 abr', '20 abr', '21 abr', '22 abr', '23 abr', '24 abr', '27 abr', '28 abr', '29 abr', '30 abr', '4 may', '5 may', '6 may', '7 may', '8 may', '11 may', '12 may', '13 may', '14 may', '15 may', '19 may', '20 may', '21 may', '22 may', '25 may', '26 may', '27 may', '28 may', '29 may', '1 jun', '2 jun', '3 jun', '4 jun', '5 jun', '9 jun', '10 jun', '11 jun', '12 jun', '15 jun', '17 jun', '18 jun', '19 jun', '22 jun', '23 jun', '24 jun', '26 jun', '29 jun', '30 jun', '1 jul', '2 jul', '3 jul', '6 jul', '7 jul', '8 jul', '9 jul', '10 jul', '13 jul', '14 jul', '15 jul', '16 jul', '17 jul', '20 jul', '21 jul', '22 jul'];
+var TASAS=[446.80, 448.36, 451.50, 455.25, 457.07, 459.45, 462.66, 466.60, 468.51, 471.70, 473.87, 473.91, 474.05, 474.53, 475.00, 475.95, 476.43, 477.14, 477.62, 478.58, 479.77, 480.25, 481.21, 481.69, 482.75, 483.33, 483.86, 484.74, 485.22, 486.19, 487.11, 489.55, 490.04, 494.11, 496.83, 499.86, 500.46, 504.91, 508.60, 510.78, 515.17, 517.96, 520.91, 523.67, 526.86, 530.50, 535.38, 540.04, 544.57, 549.37, 554.42, 557.97, 558.64, 560.37, 563.28, 567.68, 572.67, 577.54, 582.68, 587.40, 596.78, 602.33, 607.39, 612.43, 617.63, 621.53, 622.21, 623.02, 623.02, 633.36, 639.70, 652.97, 667.05, 674.93, 685.94, 700.22, 709.69, 721.35, 724.00, 725.75, 727.45, 732.48, 736.93, 737.23, 737.23];
+var CAMBIOS=[0.003500, 0.007000, 0.008300, 0.004000, 0.005200, 0.007000, 0.008500, 0.004100, 0.006800, 0.004600, 0.000100, 0.000300, 0.001000, 0.001000, 0.002000, 0.001000, 0.001500, 0.001000, 0.002000, 0.002500, 0.001000, 0.002000, 0.001000, 0.002200, 0.001200, 0.001100, 0.001800, 0.001000, 0.002000, 0.001900, 0.005000, 0.001000, 0.008300, 0.005500, 0.006100, 0.001200, 0.008900, 0.007300, 0.004300, 0.008600, 0.005400, 0.005700, 0.005300, 0.006100, 0.006900, 0.009200, 0.008700, 0.008400, 0.008800, 0.009200, 0.006400, 0.001200, 0.003100, 0.005200, 0.007800, 0.008800, 0.008500, 0.008900, 0.008100, 0.015969, 0.009300, 0.008400, 0.008298, 0.008491, 0.006314, 0.001094, 0.001302, 0.000000, 0.016597, 0.010010, 0.020744, 0.021563, 0.011813, 0.016313, 0.020818, 0.013524, 0.016430, 0.003674, 0.002417, 0.002342, 0.006915, 0.006075, 0.000407, 0.000000];
+var DIAS_FC=['23 jul', '24 jul', '27 jul', '28 jul', '29 jul', '30 jul', '31 jul', '3 ago', '4 ago', '5 ago'];
 
 var FORECAST_LOG = [{fecha:'17 jun',i:60,pred1w:616.08,pred2w:636.01,ci1w_l:608.67,ci1w_u:623.59,ci2w_l:625.21,ci2w_u:646.99},
   {fecha:'18 jun',i:61,pred1w:622.36,pred2w:643.06,ci1w_l:614.85,ci1w_u:629.96,ci2w_l:632.11,ci2w_u:654.2},
@@ -179,8 +179,9 @@ var FORECAST_LOG = [{fecha:'17 jun',i:60,pred1w:616.08,pred2w:636.01,ci1w_l:608.
   {fecha:'16 jul',i:80,pred1w:757.04,pred2w:787.83,ci1w_l:733.53,ci1w_u:781.3,ci2w_l:753.45,ci2w_u:823.78},
   {fecha:'17 jul',i:81,pred1w:761.91,pred2w:792.51,ci1w_l:738.87,ci1w_u:785.66,ci2w_l:758.85,ci2w_u:827.68},
   {fecha:'20 jul',i:82,pred1w:766.2,pred2w:796.63,ci1w_l:743.59,ci1w_u:789.5,ci2w_l:763.58,ci2w_u:831.1},
-  {fecha:'21 jul',i:83,pred1w:766.43,pred2w:796.79,ci1w_l:743.3,ci1w_u:790.28,ci2w_l:763.0,ci2w_u:832.08}
-];
+  {fecha:'21 jul',i:83,pred1w:766.43,pred2w:796.79,ci1w_l:743.3,ci1w_u:790.28,ci2w_l:763.0,ci2w_u:832.08},
+    {fecha:'22 jul',i:84,pred1w:766.37,pred2w:796.66,ci1w_l:742.8,ci1w_u:790.69,ci2w_l:762.23,ci2w_u:832.65}
+  ];
 
 
 window.addEventListener('load', function() {
@@ -197,7 +198,7 @@ var EVENTOS=[
   {fecha:'24 jun', peso_max:0.20, decae_dias:30, nota:'Terremotos M7.2/M7.5 Yaracuy -- gasto de reconstruccion'}
 ];
 
-var NOTICIAS={fecha_actualizacion:'20 jul', peso_max:0.10, techo_max:0.2, nivel:2, nota:'Presion devaluatoria fuerte sostenida: tasa BCV alcanzo 736.93 Bs el 20 jul, acumulando ~16.3% de depreciacion en julio. Gasto de reconstruccion terremoto sigue siendo driver dominante (costo estimado USD 12-20B vs capacidad fiscal anual ~USD 12B). FMI libero USD 346M el 18 jul (tramo de reserva, fondos propios de Venezuela) -- moderador menor de corto plazo, insuficiente para revertir la tendencia. Estrategia de unificacion cambiaria BCV activa. OFAC: FAQ emitido 17 jul sin alivio adicional. Escala: -2 fuerte distension, -1 distension moderada, 0 neutral, 1 presion moderada, 2 presion fuerte. Fuente: Finanzas Digital, Infobae, LaPatilla, Bloomberg Linea (14-20 jul 2026). Revisado cada viernes. techo_max es un trinquete: solo sube, nunca baja (instruccion de Natalino 10 jul 2026).'};
+var NOTICIAS={fecha_actualizacion:'20 jul', peso_max:0.10, techo_max:0.20, nivel:2, nota:'Presion devaluatoria fuerte sostenida: tasa BCV alcanzo 736.93 Bs el 20 jul, acumulando ~16.3% de depreciacion en julio. Gasto de reconstruccion terremoto sigue siendo driver dominante (costo estimado USD 12-20B vs capacidad fiscal anual ~USD 12B). FMI libero USD 346M el 18 jul (tramo de reserva, fondos propios de Venezuela) -- moderador menor de corto plazo, insuficiente para revertir la tendencia. Estrategia de unificacion cambiaria BCV activa. OFAC: FAQ emitido 17 jul sin alivio adicional. Escala: -2 fuerte distension, -1 distension moderada, 0 neutral, 1 presion moderada, 2 presion fuerte. Fuente: Finanzas Digital, Infobae, LaPatilla, Bloomberg Linea (14-20 jul 2026). Revisado cada viernes. techo_max es un trinquete: solo sube, nunca baja (instruccion de Natalino 10 jul 2026).'};
 var K_NOTICIAS=0.75;
 
 var base=TASAS[TASAS.length-1];
