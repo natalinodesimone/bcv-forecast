@@ -220,8 +220,7 @@ var MU_EWMA=W.reduce(function(s,w,i){return s+w*CAMBIOS[i];},0)/TW;
 var SIG=Math.sqrt(W.reduce(function(s,w,i){return s+w*Math.pow(CAMBIOS[i]-MU_EWMA,2);},0)/TW);
 
 var EVENTOS=[
-  {fecha:'24 jun', peso_max:0.20, decae_dias:30, nota:'Terremotos M7.2/M7.5 Yaracuy -- gasto de reconstruccion'},
-  {fecha:'21 ago',i:106,pred1w:795.36,pred2w:811.07,ci1w_l:779.42,ci1w_u:811.62,ci2w_l:788.18,ci2w_u:834.62}
+  {fecha:'24 jun', peso_max:0.20, decae_dias:30, nota:'Terremotos M7.2/M7.5 Yaracuy -- gasto de reconstruccion'}
 ];
 
 var NOTICIAS={fecha_actualizacion:'21 ago', peso_max:0.10, techo_max:0.2, nivel:0, nota:'Neutral (nivel baja de +1 a 0, actualizado 21 ago): Primera ronda de dialogo gobierno Delcy Rodriguez-oposicion cerro 12-15 ago con acuerdos concretos: liberacion de 131 presos politicos (15 ago), reforma del TSJ y busqueda de desbloqueo de activos venezolanos en Inglaterra; segunda ronda planificada para septiembre. Inversion internacional nueva: BP/XRG/UCC obtuvieron derechos sobre campo gas Loran (13 ago). EEUU supervisa USD 13B+ en ingresos petroleros condicionados a la transicion (LaPatilla/ElVenezolanoNews 19 ago). Factores neutralizadores: transicion fragil (Machado ausente del dialogo, chavismo dilato proceso), EEUU controla flujo de divisas, gasto de reconstruccion sismica aun activo. Tasa BCV sem 17-21 ago: 777.42->779.95 Bs (+0.32% en 2 sesiones, ~0.16%/dia, desaceleracion sostenida vs 0.36%/dia sem anterior). Net: senales de distension adelante pero sin ingreso masivo de divisas inmediato. Escala: -2 fuerte distension, -1 distension moderada, 0 neutral, 1 presion moderada, 2 presion fuerte. techo_max trinquete en maximo 0.20 (solo sube, instruccion Natalino 10 jul 2026). Fuentes: El Espanol/ListinDiario 15 ago, Descifrado 15 ago, LaPatilla 19 ago, ElVenezolanoNews 19 ago, Bloomberg Linea/Infobae ago 2026.'};
