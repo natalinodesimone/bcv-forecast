@@ -261,7 +261,7 @@ var FORECAST_LOG = [{fecha:'17 jun',i:60,pred1w:616.08,pred2w:636.01,ci1w_l:608.
   {fecha:'13 nov',i:161,pred1w:922.63,pred2w:933.77,ci1w_l:912.17,ci1w_u:933.2,ci2w_l:918.84,ci2w_u:948.94},
   {fecha:'16 nov',i:162,pred1w:925.12,pred2w:936.35,ci1w_l:914.95,ci1w_u:935.4,ci2w_l:921.83,ci2w_u:951.1},
   {fecha:'17 nov',i:163,pred1w:926.73,pred2w:937.83,ci1w_l:916.83,ci1w_u:936.72,ci2w_l:923.71,ci2w_u:952.17},
-{fecha:'18 nov',i:164,pred1w:927.25,pred2w:937.97,ci1w_l:917.53,ci1w_u:937.06,ci2w_l:924.1,ci2w_u:952.04}];
+{fecha:'18 nov',i:164,pred1w:935.13,pred2w:949.13,b1w:927.25,b2w:937.97,ci1w_l:917.53,ci1w_u:937.06,ci2w_l:924.1,ci2w_u:952.04}];
 
 window.addEventListener('load', function() {
 
@@ -316,13 +316,19 @@ var PESO_NOTICIAS=PESO_NOTICIAS_MAX*(Math.abs(NOTICIAS.nivel)/2);
 var PESO_PRE=1-PESO_EVENTO-PESO_NOTICIAS;
 var MU=PESO_PRE*MU_PRE+PESO_EVENTO*MU_EVENTO+PESO_NOTICIAS*MU_NOTICIAS;
 
+// MARGEN DE SEGURIDAD (instruccion de Natalino 18 nov 2026: la tasa estimada debe quedar POR ENCIMA de la real).
+// m1w/m2w = percentil 90 de (real / pronostico_base - 1) sobre los ultimos 60 pronosticos resueltos de FORECAST_LOG
+// -> la tasa real supera al pronostico ~10% de las veces. Recalibrado cada semana por la tarea semanal.
+var MARGEN={m1w:0.0085, m2w:0.0119, fecha_calibracion:'18 nov', percentil:0.90, ventana:60};
+function margenT(t){return t<=5?MARGEN.m1w*t/5:MARGEN.m1w+(MARGEN.m2w-MARGEN.m1w)*(t-5)/5;}
+
 var F=[];
 var base=TASAS[TASAS.length-1];
 var lm=Math.log(1+MU);
 for(var t=0;t<=10;t++){
   F.push({
-    c:parseFloat((base*Math.pow(1+MU,t)).toFixed(2)),
-    u2:parseFloat((base*Math.exp(t*lm+Z*SIG*Math.sqrt(t))).toFixed(2)),
+    c:parseFloat((base*Math.pow(1+MU,t)*(1+margenT(t))).toFixed(2)),
+    u2:parseFloat(Math.max(base*Math.exp(t*lm+Z*SIG*Math.sqrt(t)),base*Math.pow(1+MU,t)*(1+margenT(t))).toFixed(2)),
     l2:parseFloat((base*Math.exp(t*lm-Z*SIG*Math.sqrt(t))).toFixed(2))
   });
 }
