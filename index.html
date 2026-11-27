@@ -278,7 +278,7 @@ var SIG=Math.sqrt(W.reduce(function(s,w,i){return s+w*Math.pow(CAMBIOS[i]-MU_EWM
 var EVENTOS=[
 ];
 
-var NOTICIAS={fecha_actualizacion:'18 nov', peso_max:0.10, techo_max: 0.2, nivel:0, nota:'Sin cambio de nivel (0, neutral). BCV 916,65 (18 nov); salto +0,79% el 13 nov ya capturado por EWMA. Cuenta custodia petrolera (US$12.263M al 30 sep) desembolsada 98,7% al BCV para intervencion con resultados modestos; brecha oficial/paralelo estable ~15%, crudo >90 USD, reservas US$12.721M. Sin sancion, giro cambiario ni shock fiscal nuevo; vigilar menor capacidad de intervencion e inflacion 6,2% m/m (oct). techo_max=0.20 trinquete sin cambio; EVENTOS vacio. Fuentes: La Patilla/El Pais (17 nov 2026), Informe21 (17 nov 2026), Finanzas Digital (13-18 nov 2026).'};
+var NOTICIAS={fecha_actualizacion:'27 nov', peso_max:0.10, techo_max: 0.2, nivel:1, nota:'Nivel 0 -> 1 (presion devaluatoria moderada). BCV 926,36 (27 nov), +0,82% en la semana (918,77 el 20 nov), aceleracion ya en EWMA. Riesgo hacia adelante: fondo de la cuenta custodia petrolera usado para intervencion casi agotado (98,7% desembolsado), gasto estacional de diciembre (aguinaldos/bonos), endeudamiento adicional 2026 en discusion en la AN; inflacion 6,2% m/m (oct). Contrapeso leve: AN derogara ley anti-sanciones (1 dic) y nueva ronda de dialogo 10 dic. techo_max=0.20 trinquete sin cambio; EVENTOS vacio. Fuentes: Finanzas Digital (25-27 nov 2026), La Patilla (17, 19-26 nov 2026), Infobae (26 nov 2026).'};
 var K_NOTICIAS=0.75;
 
 var base=TASAS[TASAS.length-1];
@@ -321,7 +321,7 @@ var MU=PESO_PRE*MU_PRE+PESO_EVENTO*MU_EVENTO+PESO_NOTICIAS*MU_NOTICIAS;
 // MARGEN DE SEGURIDAD (instruccion de Natalino 18 nov 2026: la tasa estimada debe quedar POR ENCIMA de la real).
 // m1w/m2w = percentil 90 de (real / pronostico_base - 1) sobre los ultimos 60 pronosticos resueltos de FORECAST_LOG
 // -> la tasa real supera al pronostico ~10% de las veces. Recalibrado cada semana por la tarea semanal.
-var MARGEN={m1w:0.0085, m2w:0.0119, fecha_calibracion:'18 nov', percentil:0.90, ventana:60};
+var MARGEN={m1w:0.0085, m2w:0.0099, fecha_calibracion:'27 nov', percentil:0.90, ventana:60};
 function margenT(t){return t<=5?MARGEN.m1w*t/5:MARGEN.m1w+(MARGEN.m2w-MARGEN.m1w)*(t-5)/5;}
 
 var F=[];
